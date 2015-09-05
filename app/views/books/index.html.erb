@@ -1,0 +1,38 @@
+
+<div class="page-header">	
+	<h1>Books for Sale at  <%= image_tag( LOGOS[SCHOOLS[current_user.email.split("@")[1]]], class: "school_logo" ) %></h1>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<form class="navbar-form" role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Title or Author" name="search">
+			</div>
+			<button type="submit" id="search" class="btn btn-info btn-sm">Search</button>
+		</form>
+	</div>
+
+	<div class="col-sm-6 text-right">
+		<% if can? :modify, Book %>
+			<%= link_to 'New Book', new_book_path, class:'btn btn-lg btn-primary'%>
+		<% end %>
+		<%= link_to fa_icon('usd', text:'Sell A Book'), sell_books_path, class:'btn btn-lg btn-primary'%>
+	</div>
+</div>
+<br>
+
+
+<% @books.each_slice(4) do |books| %>
+	<div class="row">
+		<% books.each do |book| %>
+		<div class="col-xs-3">
+			<%= render book %>
+		</div>
+		<% end %>
+	</div>
+<% end %>
+
+<%= javascript_include_tag 'hover'%>
+
+
+

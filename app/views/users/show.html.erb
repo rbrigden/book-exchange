@@ -1,0 +1,79 @@
+<div class="page-header">
+  <h1><%= show_name(@user) %></h1>
+</div>
+
+<div class="text-right">
+	<%= link_to fa_icon('usd', text:'Sell A Book'), sell_books_path, class:'btn btn-lg btn-primary'%>
+</div>
+<div class="row">
+
+	<h2>My Open Listings</h2>
+
+	<table class='table table-hover'>
+	    <thead>
+		    <tr>
+		      <th colspan="2"></th>
+		    </tr>
+		    <tr>
+			  <th>Listing</th>
+			  <th>Price</th>
+		    </tr>
+		</thead>
+		<tbody>
+			<% @user.listings.where(status:true).each do |listing| %>
+			<tr>   
+			<td><%= link_to listing.book.title, book_listing_path(listing.book, listing) %></td>
+			<td><%= show_price(listing.min_price,2) %></td>				
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+
+<div class="row">
+	<h2>Past Purchases</h2>
+	<table class='table table-hover'>
+	    <thead>
+		    <tr>
+		      <th colspan="6"></th>
+		    </tr>
+		    <tr>
+			    <th> Exchange ID</th>
+			    <th> Listing </th>
+			    <th> Price </th>
+			    <th> Buyer </th>
+				<th> Seller </th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<%= render @user.exchanges.reverse %>
+		</tbody>
+	</table>
+</div>
+
+<div class="row">
+	<h2>Past Sales</h2>
+	<table class='table table-hover'>
+	    <thead>
+		    <tr>
+		      <th colspan="6"></th>
+		    </tr>
+		    <tr>
+			    <th> Exchange ID</th>
+			    <th> Listing </th>
+			    <th> Price </th>
+			    <th> Buyer </th>
+				<th> Seller </th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @user.listings.where(status:false).reverse.each do |listing| %>
+				<%= render listing.exchange %>
+			<% end %>
+		</tbody>
+	</table>
+
+</div>
+

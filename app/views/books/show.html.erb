@@ -1,0 +1,54 @@
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-9">
+			<br><br>
+			<h1><%= @book.title%></h1>
+			<h4><%=  @book.author%> </h4>
+		</div>
+		<div class="col-sm-3 text-right">
+			<%= show_cover(@book, 120, 160) %>
+		</div>
+	</div>
+</div>
+<br>
+<div class="row text-right">
+<%= link_to "Sort by Price", book_path(@book, sort:"price"), class: 'btn btn-md btn-default' %>
+<%= link_to "Sort by Quality", book_path(@book, sort:"quality"), class: 'btn btn-md btn-default' %>
+<%= link_to fa_icon('exchange', text:'New Listing'), new_book_listing_path(@book), class: 'btn btn-md btn-primary' %>
+</div><br>
+
+<% listings = @book.listings.where(status: true) %>
+<% listings = listings.select{|listing| same_school?(listing.user, current_user)} %>
+<% buys = listings.select{ |l| l.listing_type = "Buy" } %>
+
+<% if (params[:sort] == 'price') %>
+	<% buys = buys.sort_by { |l| [l.min_price, l.quality] }  %>
+<% elsif (params[:sort] == 'quality') %>
+	<% buys = buys.sort_by { |l| [l.quality, l.min_price] }  %>
+<% end %>
+
+
+<% if listings.size == 0 %>
+	<h1><small>No Current Listings for this Book :(</small></h1>
+<% end %>
+
+<div class="row">
+    <% buys.each do |buy| %>
+		<div class="col-xs-3">
+			<%= render buy %>
+		</div>
+	<% end %>
+</div>
+<br><br>
+
+<div class='text-right'>
+	<%= link_to "Found an Error? Report this Book", new_report_path(book_id: @book.id), class: 'btn btn-sm btn-warning' %>
+
+	<% if can? :modify, Book%>
+		<%= link_to fa_icon('pencil', text:'Edit Book'), edit_book_path(@book), class: 'btn btn-sm btn-default' %>
+	<% end %>
+	
+	<% if can? :destroy, Book %>
+		<%= link_to fa_icon('trash-o', text:'Delete Book'),  @book, method: :delete, data: { confirm: 'WARNING: This will destroy all listings and exchanges associated with this book. Are you sure?'  }, class:'btn btn-sm btn-danger' %>
+	<% end %>
+</div>

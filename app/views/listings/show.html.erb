@@ -1,0 +1,79 @@
+<div class="page-header">
+  <h1><%= show_price(@listing.min_price, 0) + " | "%> <small> Listing for <%= link_to(truncate(@listing.book.title, length:35), @listing.book) %>  <%= show_status(@listing) %></small>
+  </h1>
+</div>
+
+<div class="row">
+  <div class="col-sm-2">
+    <%= show_cover(@listing.book, 150, 200) %>
+  </div>
+
+  <div class="col-sm-10">
+  <br>
+      <dl class="dl-horizontal">
+        <dt>Listing Type</dt>
+        <dd><%= @listing.listing_type %></dd>
+        <dt>Quality</dt>
+        <dd><%= show_quality(@listing) %></dd>
+        <dt>Description</dt>
+        <dd><%= @listing.description %></dd>
+        <dt>Price</dt>
+        <dd><%= show_price(@listing.min_price, 2) %></dd>
+        <dt>Seller</dt>
+        <dd><%= show_seller(@listing) %>  <%="(You!)" if @listing.user == current_user%> </dd>
+      </dl>
+  </div>
+</div>
+
+<!-- 
+<% if @listing.user_id == current_user.id or  current_user.is?(:superuser) or current_user.is?(:admin)%>
+      <br>
+      <table class='table table-striped'>
+        <thead>
+          <tr>
+            <th colspan="3"></th>
+          </tr>
+          <th>Offer</th>
+          <th>Name</th>
+          <th>Price</th>
+          <% if can? :destroy, Offer %>
+              <th>Options</th>
+          <% end %>
+        </thead>
+
+        <tbody>
+          <%= render @listing.offers %>
+        </tbody>
+      </table>
+<% end %> 
+
+
+<% @listing.offers.each do |offer| %>
+      <% if offer.user_id == current_user.id %>
+            <p style="text-align:left;">
+                  <h3>You have made an offer of <%= show_price(offer.price, 2) %>  </span></h3>
+            </p>
+      <% end %>
+<% end %>
+
+<% if @listing.offers.size == 0 %>
+            <p style="text-align:left;">
+                  <h4>You have not made an offer for this listing</h4>
+            </p>
+<% end %>
+-->
+
+
+<% if @listing.status %>
+  <div class='text-right'>
+    <% if current_user.id != @listing.user_id %>
+      <%= link_to fa_icon('dollar', text:'Buy Book'), book_listing_buy_path(@listing.book, @listing), class: 'btn btn-lg btn-primary', data: { confirm: 'Are you sure you want to purchase this book? (PLEASE ONLY CLICK BUY BUTTON ONCE)'  } %>
+    <% end %>
+    <br><br>
+    <% if current_user == @listing.user || (can? :modify, Listing) %>
+      <%= link_to fa_icon('pencil', text:'Edit Listing'), edit_book_listing_path(@listing.book, @listing), class: 'btn btn-sm btn-default' %>
+      <%= link_to fa_icon('trash-o', text:'Delete Listing'),  book_listing_path(@listing.book, @listing), method: :delete, data: { confirm: 'Are you sure?'  }, class:'btn btn-sm btn-danger' %>
+    <% end %>
+  </div>
+
+<% end %>
